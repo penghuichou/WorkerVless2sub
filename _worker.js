@@ -64,38 +64,26 @@ const regex = /^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|\[.*\]):?(\d+)?#?(.*)?$/;
 // 省略其他代码...
 
 async function sendMessage(type, ip, add_data = "") {
-    console.log("Sending message:", type, ip, add_data); // 添加日志以跟踪发送通知的过程
-
-    if (BotToken !== '' && ChatID !== '') {
-        let msg = "";
-        const response = await fetch(`http://ip-api.com/json/${ip}?lang=zh-CN`);
-        if (response.status == 200) {
-            const ipInfo = await response.json();
-            msg = `${type}\nIP: ${ip}\n国家: ${ipInfo.country}\n<tg-spoiler>城市: ${ipInfo.city}\n组织: ${ipInfo.org}\nASN: ${ipInfo.as}\n${add_data}`;
-        } else {
-            msg = `${type}\nIP: ${ip}\n<tg-spoiler>${add_data}`;
-        }
-
-        let url = `https://api.telegram.org/bot${BotToken}/sendMessage?chat_id=${ChatID}&parse_mode=HTML&text=${encodeURIComponent(msg)}`;
-        try {
-            const telegramResponse = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;',
-                    'Accept-Encoding': 'gzip, deflate, br',
-                    'User-Agent': 'Mozilla/5.0 Chrome/90.0.4430.72'
-                }
-            });
-
-            if (!telegramResponse.ok) {
-                console.error("Telegram API request failed:", telegramResponse.status, telegramResponse.statusText);
-            } else {
-                console.log("Telegram API request successful");
-            }
-        } catch (error) {
-            console.error("Error sending Telegram message:", error);
-        }
-    }
+	if ( BotToken !== '' && ChatID !== ''){
+		let msg = "";
+		const response = await fetch(`http://ip-api.com/json/${ip}?lang=zh-CN`);
+		if (response.status == 200) {
+			const ipInfo = await response.json();
+			msg = `${type}\nIP: ${ip}\n国家: ${ipInfo.country}\n<tg-spoiler>城市: ${ipInfo.city}\n组织: ${ipInfo.org}\nASN: ${ipInfo.as}\n${add_data}`;
+		} else {
+			msg = `${type}\nIP: ${ip}\n<tg-spoiler>${add_data}`;
+		}
+	
+		let url = "https://api.telegram.org/bot"+ BotToken +"/sendMessage?chat_id=" + ChatID + "&parse_mode=HTML&text=" + encodeURIComponent(msg);
+		return fetch(url, {
+			method: 'get',
+			headers: {
+				'Accept': 'text/html,application/xhtml+xml,application/xml;',
+				'Accept-Encoding': 'gzip, deflate, br',
+				'User-Agent': 'Mozilla/5.0 Chrome/90.0.4430.72'
+			}
+		});
+	}
 }
 
 
