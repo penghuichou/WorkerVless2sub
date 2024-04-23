@@ -61,7 +61,11 @@ let total = 99; //PB
 let timestamp = 4102329600000; //2099-12-31
 const regex = /^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|\[.*\]):?(\d+)?#?(.*)?$/;
 
+// 省略其他代码...
+
 async function sendMessage(type, ip, add_data = "") {
+    console.log("Sending message:", type, ip, add_data); // 添加日志以跟踪发送通知的过程
+
     if (BotToken !== '' && ChatID !== '') {
         let msg = "";
         const response = await fetch(`http://ip-api.com/json/${ip}?lang=zh-CN`);
@@ -72,20 +76,29 @@ async function sendMessage(type, ip, add_data = "") {
             msg = `${type}\nIP: ${ip}\n<tg-spoiler>${add_data}`;
         }
 
-        const formData = new FormData();
-        formData.append("chat_id", ChatID);
-        formData.append("text", msg);
+        let url = `https://api.telegram.org/bot${BotToken}/sendMessage?chat_id=${ChatID}&parse_mode=HTML&text=${encodeURIComponent(msg)}`;
+        try {
+            const telegramResponse = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'text/html,application/xhtml+xml,application/xml;',
+                    'Accept-Encoding': 'gzip, deflate, br',
+                    'User-Agent': 'Mozilla/5.0 Chrome/90.0.4430.72'
+                }
+            });
 
-        const telegramResponse = await fetch(`https://api.telegram.org/bot${BotToken}/sendMessage`, {
-            method: 'POST',
-            body: formData
-        });
-
-        if (!telegramResponse.ok) {
-            console.error(`Error sending message to Telegram: ${telegramResponse.status} ${telegramResponse.statusText}`);
+            if (!telegramResponse.ok) {
+                console.error("Telegram API request failed:", telegramResponse.status, telegramResponse.statusText);
+            } else {
+                console.log("Telegram API request successful");
+            }
+        } catch (error) {
+            console.error("Error sending Telegram message:", error);
         }
     }
 }
+
+
 // 其他部分保持不变
 
 let MamaJustKilledAMan = ['telegram','twitter','miaoko'];
