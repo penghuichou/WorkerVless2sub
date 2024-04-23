@@ -1,35 +1,35 @@
 
 // 部署完成后在网址后面加上这个，获取订阅器默认节点，/auto
 
-let mytoken= ['auto'];//快速订阅访问入口, 留空则不启动快速订阅
+let mytoken = ['auto']; //快速订阅访问入口, 留空则不启动快速订阅
 
 // 设置优选地址，不带端口号默认443，TLS订阅生成
 let addresses = [
-	'icook.tw:2053#官方优选域名',
-	'cloudflare.cfgo.cc#优选官方线路',
+    'icook.tw:2053#官方优选域名',
+    'cloudflare.cfgo.cc#优选官方线路',
 ];
 
 // 设置优选地址api接口
 let addressesapi = [
-	'https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressesapi.txt', //可参考内容格式 自行搭建。
-	//'https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressesipv6api.txt', //IPv6优选内容格式 自行搭建。
+    'https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressesapi.txt', //可参考内容格式 自行搭建。
+    //'https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressesipv6api.txt', //IPv6优选内容格式 自行搭建。
 ];
 
 // 设置优选地址，不带端口号默认80，noTLS订阅生成
 let addressesnotls = [
-	'www.visa.com.sg#官方优选域名',
-	'www.wto.org:8080#官方优选域名',
-	'www.who.int:8880#官方优选域名',
+    'www.visa.com.sg#官方优选域名',
+    'www.wto.org:8080#官方优选域名',
+    'www.who.int:8880#官方优选域名',
 ];
 
 // 设置优选noTLS地址api接口
 let addressesnotlsapi = [
-	'https://raw.githubusercontent.com/cmliu/CFcdnVmess2sub/main/addressesapi.txt', //可参考内容格式 自行搭建。
+    'https://raw.githubusercontent.com/cmliu/CFcdnVmess2sub/main/addressesapi.txt', //可参考内容格式 自行搭建。
 ];
 
-let DLS = 8;//速度下限
+let DLS = 8; //速度下限
 let addressescsv = [
-	//'https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressescsv.csv', //iptest测速结果文件。
+    //'https://raw.githubusercontent.com/cmliu/WorkerVless2sub/main/addressescsv.csv', //iptest测速结果文件。
 ];
 
 let subconverter = "apiurl.v1.mk"; //在线订阅转换后端，目前使用肥羊的订阅转换功能。支持自建psub 可自行搭建https://github.com/bulianglin/psub
@@ -39,50 +39,54 @@ let link = '';
 let edgetunnel = 'ed';
 let RproxyIP = 'false';
 let proxyIPs = [
-	'proxyip.aliyun.fxxk.dedyn.io',
-	'proxyip.multacom.fxxk.dedyn.io',
-	'proxyip.vultr.fxxk.dedyn.io',
+    'proxyip.aliyun.fxxk.dedyn.io',
+    'proxyip.multacom.fxxk.dedyn.io',
+    'proxyip.vultr.fxxk.dedyn.io',
 ];
 let CMproxyIPs = [
-	//{ proxyIP: "proxyip.fxxk.dedyn.io", type: "HK" },
+    //{ proxyIP: "proxyip.fxxk.dedyn.io", type: "HK" },
 ];
-let BotToken ='';
-let ChatID =''; 
-let TG = 1; //小白勿动， 开发者专用，1 为推送所有的访问信息，0 为不推送订阅转换后端的访问信息与异常访问
-let proxyhosts = [//本地代理域名池
-	//'ppfv2tl9veojd-maillazy.pages.dev',
+let BotToken = '';
+let ChatID = '';
+let proxyhosts = [ //本地代理域名池
+    //'ppfv2tl9veojd-maillazy.pages.dev',
 ];
-let proxyhostsURL = 'https://raw.githubusercontent.com/cmliu/CFcdnVmess2sub/main/proxyhosts';//在线代理域名池URL
-let EndPS = '';//节点名备注内容
+let proxyhostsURL = 'https://raw.githubusercontent.com/cmliu/CFcdnVmess2sub/main/proxyhosts'; //在线代理域名池URL
+let EndPS = ''; //节点名备注内容
 
 let FileName = 'WorkerVless2sub';
-let SUBUpdateTime = 6; 
-let total = 99;//PB
+let SUBUpdateTime = 6;
+let total = 99; //PB
 //let timestamp = now;
-let timestamp = 4102329600000;//2099-12-31
+let timestamp = 4102329600000; //2099-12-31
 const regex = /^(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}|\[.*\]):?(\d+)?#?(.*)?$/;
+
 async function sendMessage(type, ip, add_data = "") {
-	if ( BotToken !== '' && ChatID !== ''){
-		let msg = "";
-		const response = await fetch(`http://ip-api.com/json/${ip}?lang=zh-CN`);
-		if (response.status == 200) {
-			const ipInfo = await response.json();
-			msg = `${type}\nIP: ${ip}\n国家: ${ipInfo.country}\n<tg-spoiler>城市: ${ipInfo.city}\n组织: ${ipInfo.org}\nASN: ${ipInfo.as}\n${add_data}`;
-		} else {
-			msg = `${type}\nIP: ${ip}\n<tg-spoiler>${add_data}`;
-		}
-	
-		let url = "https://api.telegram.org/bot"+ BotToken +"/sendMessage?chat_id=" + ChatID + "&parse_mode=HTML&text=" + encodeURIComponent(msg);
-		return fetch(url, {
-			method: 'get',
-			headers: {
-				'Accept': 'text/html,application/xhtml+xml,application/xml;',
-				'Accept-Encoding': 'gzip, deflate, br',
-				'User-Agent': 'Mozilla/5.0 Chrome/90.0.4430.72'
-			}
-		});
-	}
+    if (BotToken !== '' && ChatID !== '') {
+        let msg = "";
+        const response = await fetch(`http://ip-api.com/json/${ip}?lang=zh-CN`);
+        if (response.status == 200) {
+            const ipInfo = await response.json();
+            msg = `${type}\nIP: ${ip}\n国家: ${ipInfo.country}\n<tg-spoiler>城市: ${ipInfo.city}\n组织: ${ipInfo.org}\nASN: ${ipInfo.as}\n${add_data}`;
+        } else {
+            msg = `${type}\nIP: ${ip}\n<tg-spoiler>${add_data}`;
+        }
+
+        const formData = new FormData();
+        formData.append("chat_id", ChatID);
+        formData.append("text", msg);
+
+        const telegramResponse = await fetch(`https://api.telegram.org/bot${BotToken}/sendMessage`, {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!telegramResponse.ok) {
+            console.error(`Error sending message to Telegram: ${telegramResponse.status} ${telegramResponse.statusText}`);
+        }
+    }
 }
+// 其他部分保持不变
 
 let MamaJustKilledAMan = ['telegram','twitter','miaoko'];
 async function getAddressesapi(api) {
