@@ -48,6 +48,7 @@ let CMproxyIPs = [
 ];
 let BotToken ='';
 let ChatID =''; 
+let TG = 1; //小白勿动， 开发者专用，1 为推送所有的访问信息，0 为不推送订阅转换后端的访问信息与异常访问
 let proxyhosts = [//本地代理域名池
 	//'ppfv2tl9veojd-maillazy.pages.dev',
 ];
